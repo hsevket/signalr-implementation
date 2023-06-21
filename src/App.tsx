@@ -1,26 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
-
+import Connector from './signalr-connection'
 function App() {
+  const { newMessage, events } = Connector();
+  const [message, setMessage] = useState("initial value");
+  useEffect(() => {
+    events((message) => {
+      console.log(message)
+      setMessage(message);})
+  }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <span>message from signalR: <span style={{ color: "green" }}>{message}</span> </span>
+      <br />
+      <button onClick={() => newMessage((new Date()).toISOString())}>send date </button>
     </div>
   );
 }
-
 export default App;
